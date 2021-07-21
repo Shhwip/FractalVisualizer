@@ -2,9 +2,10 @@
 #include <GLFW/glfw3.h> // GLFW helper library
 #include <stdio.h>
 
-// ***************************************************
+// ##############################################################################################################################################
 // removeSquare() takes as input two points that define a square, the bottom left and the top right and the current layer
 // It draws a square in the middle of the given square and then calls removeSquare() on the eight squares surrounding the middle square
+// this creats a Sierpinski carpet recursively
 void removeSquare(float bottomLeftCoordinateX, float bottomLeftCoordinateY, float topRightCoordinateX, float topRightCoordinateY, int layersDeep)
 {
     // at about 8 layers deep it becomes cluttered especially since there is no zoom
@@ -19,7 +20,6 @@ void removeSquare(float bottomLeftCoordinateX, float bottomLeftCoordinateY, floa
     xShift /= 3;
     yShift /= 3;
     // everything here is represented in terms of the bottom left corner of the original square
-    // this is so we can just 
     glBegin(GL_QUADS);
     glVertex2f(bottomLeftCoordinateX + xShift, bottomLeftCoordinateY + yShift); // The bottom left corner  
     glVertex2f(bottomLeftCoordinateX + xShift, bottomLeftCoordinateY + yShift * 2); // The top left corner  
@@ -35,7 +35,7 @@ void removeSquare(float bottomLeftCoordinateX, float bottomLeftCoordinateY, floa
         {
             if (k == 1 && j == 1)
             {
-                continue;
+                continue; // we have already drawn this square
             }
             removeSquare(bottomLeftCoordinateX + xShift * k, bottomLeftCoordinateY + yShift * j, bottomLeftCoordinateX + xShift + xShift * k, bottomLeftCoordinateY + yShift + yShift * j, layersDeep);
         }
@@ -133,16 +133,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shader_programme);
         glBindVertexArray(vao);
-        // draw points 0-3 from the currently bound VAO with current in-use shader
-        //glDrawArrays(GL_TRIANGLES, 0, 9);
-        //glDrawArrays(GL_TRIANGLES, 10, 18);
-        //glBegin(GL_QUADS);
-        //glVertex2f(-1.0f, -1.0f); // The bottom left corner  
-        //glVertex2f(-1.0f, 1.0f); // The top left corner  
-        //glVertex2f(1.0f, 1.0f); // The top right corner  
-        //glVertex2f(1.0f, -1.0f); // The bottom right corner 
-        //glEnd();
-        // update other events like input handling 
         removeSquare(0, 0, 1, 1, 0);
         glfwPollEvents();
         // put the stuff we've been drawing onto the display
